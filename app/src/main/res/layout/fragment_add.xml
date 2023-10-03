@@ -49,7 +49,7 @@
             android:id="@+id/editTextRemarks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Remarks"
+            android:hint="Remarks(Optional)"
             android:inputType="text" />
 
         <!-- Picture URL input -->
@@ -57,7 +57,7 @@
             android:id="@+id/editTextPictureUrl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Picture Url"
+            android:hint="Picture Url(Optional)"
             android:inputType="textUri" />
 
         <!-- Save button -->

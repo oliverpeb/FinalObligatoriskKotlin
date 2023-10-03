@@ -26,7 +26,7 @@ class PersonRepository {
             .addConverterFactory(GsonConverterFactory.create())
         .build()
         personService = build.create(PersonService::class.java)
-        getPersons()
+
     }
 
     fun getPersons(){
@@ -50,12 +50,12 @@ class PersonRepository {
         })
     }
 
-    fun add(person: Person){
+    fun add(person: Person, userId: String){
         personService.savePerson(person).enqueue(object : Callback<Person>{
             override fun onResponse(call: Call<Person>, response: Response<Person>){
                 if (response.isSuccessful){
                     Log.d("APPLE", "Added: " + response.body())
-                    getPersons()
+                    getPersonsForUser(userId)
                 }else{
                     val message = response.code().toString() + " " + response.message()
                     Log.d("APPLE", message)
@@ -70,13 +70,13 @@ class PersonRepository {
 
     }
 
-    fun delete(id: Int){
+    fun delete(id: Int, userId: String){
         personService.deletePerson(id).enqueue(object : Callback<Person>{
             override fun onResponse(call: Call<Person>, response: Response<Person>){
                 if(response.isSuccessful){
                     Log.d("APPLE", "Updated: " + response.body())
                     updateMessageLiveData.postValue("Deleted: " + response.body())
-                    getPersons()
+                    getPersonsForUser(userId)
                 }else{
                     val message = response.code().toString() + " " + response.message()
                     errorMessageLiveData.postValue(message)
@@ -91,13 +91,13 @@ class PersonRepository {
         })
     }
 
-    fun update(person: Person){
+    fun update(person: Person, userId: String){
         personService.updatePerson(person.id, person).enqueue(object : Callback<Person>{
             override fun onResponse(call: Call<Person>, response: Response<Person>) {
                 if(response.isSuccessful){
                     Log.d("APPLE", "Updated: " + response.body())
                     updateMessageLiveData.postValue("Updated: " + response.body())
-                    getPersons()
+                    getPersonsForUser(userId)
 
                 }else{
                     val message = response.code().toString() + " " + response.message()
@@ -113,12 +113,53 @@ class PersonRepository {
         })
     }
 
+    fun getPersonsForUser(userId: String) {
+        personService.getPersonsByUserId(userId).enqueue(object : Callback<List<Person>> {
+
+            override fun onResponse(call: Call<List<Person>>, response: Response<List<Person>>) {
+                if (response.isSuccessful) {
+                    // Update the LiveData with the new list of persons (friends)
+                    personsLiveData.postValue(response.body())
+                } else {
+                    // Handle different types of errors
+                    val message = when(response.code()) {
+                        404 -> "No friends found for user."
+                        500 -> "Server error. Please try again later."
+                        else -> "Unexpected error: ${response.code()}"
+                    }
+                    errorMessageLiveData.postValue(message)
+                }
+            }
+
+            override fun onFailure(call: Call<List<Person>>, t: Throwable) {
+                // Network error or other unexpected errors
+                errorMessageLiveData.postValue("Network error: ${t.message}")
+            }
+        })
+    }
+
     fun sortByName(){
-        personsLiveData.value = personsLiveData.value?.sortedBy { it.name }
+        personsLiveData.value = personsLiveData.value?.sortedBy { it.name.lowercase() }
     }
 
     fun sortByNameDescending(){
-        personsLiveData.value = personsLiveData.value?.sortedByDescending { it.name }
+        personsLiveData.value = personsLiveData.value?.sortedByDescending { it.name.lowercase()}
+    }
+
+    fun sortByBirthday() {
+        personsLiveData.value = personsLiveData.value?.sortedWith(compareBy(
+            { it.birthDayOfMonth },
+            { it.birthMonth },
+            { it.birthYear }
+        ))
+    }
+
+    fun sortByBirthdayDescending() {
+        personsLiveData.value = personsLiveData.value?.sortedWith(
+            compareByDescending<Person> { it.birthYear }
+                .thenByDescending { it.birthMonth }
+                .thenByDescending { it.birthDayOfMonth }
+        )
     }
 
     fun sortByAge(){
@@ -139,4 +180,6 @@ class PersonRepository {
             personsLiveData.value = personsLiveData.value?.filter { person -> person.name.contains(name) }
         }
     }
+
+
 }

@@ -6,7 +6,7 @@ import java.util.Calendar
 
 data class Person(
     @Json(name = "person_id") val id: Int,
-    @Json(name = "user_id") val userId: String,
+    @Json(name = "user_id") val userId: String?,
     val name: String,
     @Json(name = "birth_year") val birthYear: Int,
     @Json(name = "birth_month") val birthMonth: Int,

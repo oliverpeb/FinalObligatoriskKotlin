@@ -56,6 +56,8 @@
         <item>Sort by Name Descending</item>
         <item>Sort by Age</item>
         <item>Sort by Age Descending</item>
+        <item>sort by Birthday</item>
+        <item>sort by Birthday Descending</item>
 
     </string-array>
 </resources>

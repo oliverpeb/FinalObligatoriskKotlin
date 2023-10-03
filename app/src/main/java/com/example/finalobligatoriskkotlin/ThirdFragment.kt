@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.finalobligatoriskkotlin.databinding.FragmentThirdBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class ThirdFragment : Fragment() {
 
@@ -58,7 +59,6 @@ class ThirdFragment : Fragment() {
         val ageTextView = binding.tvPersonAge
         val birthdayTextView = binding.tvPersonBirthday
 
-
         nameTextView.text = selectedPerson?.name
         Log.d("ThirdFragment", "Setting nameTextView to: ${selectedPerson?.name}")
         birthYearTextView.text = "Birth Year: ${selectedPerson?.birthYear}"
@@ -71,46 +71,58 @@ class ThirdFragment : Fragment() {
         binding.buttonDelete.setOnClickListener {
             selectedPerson?.let {
                 Log.d("Pear", "Delete button clicked")
-                viewModel.delete(it.id)
-                Log.d("Pear", "Person deleted with ID: ${it.id}")
-                findNavController().popBackStack()
+                val userUID = FirebaseAuth.getInstance().currentUser?.uid
+                if (userUID != null) {
+                    viewModel.delete(it.id, userUID)
+                    Log.d("Pear", "Person deleted with ID: ${it.id}")
+                    viewModel.getPersonsForUser(userUID)
+                    findNavController().popBackStack()
+                } else {
+                    // Handle the case when there's no logged-in user (Optional)
+                    Toast.makeText(context, "User not logged in.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
-        binding.buttonUpdate.setOnClickListener{
+        binding.buttonUpdate.setOnClickListener {
             val name = binding.editTextName.text.toString()
             val birthYear = binding.editTextBirthYear.text.toString().toIntOrNull()
             val birthMonth = binding.editTextBirthMonth.text.toString().toIntOrNull()
             val birthDayOfMonth = binding.editTextBirthDayOfMonth.text.toString().toIntOrNull()
             val remarks = selectedPerson?.remarks ?: ""
             val pictureUrl = selectedPerson?.pictureUrl
+            val userUID = FirebaseAuth.getInstance().currentUser?.uid
 
-            if (birthYear != null && birthMonth != null && birthDayOfMonth != null) {
+            if (birthYear != null && birthMonth != null && birthDayOfMonth != null && userUID != null) {
                 val updatedPerson = selectedPerson?.copy(
                     name = name,
                     birthYear = birthYear,
                     birthMonth = birthMonth,
                     birthDayOfMonth = birthDayOfMonth,
-                    remarks = if(remarks.isBlank()) null else remarks,
+                    remarks = if (remarks.isBlank()) null else remarks,
                     pictureUrl = pictureUrl
                 )
 
-
                 if (updatedPerson != null) {
-                    viewModel.update(updatedPerson)
+                    viewModel.update(updatedPerson, userUID)
+                    viewModel.getPersonsForUser(userUID)
                     findNavController().popBackStack()
                 } else {
-                    Toast.makeText(context, "An error occurred while updating.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "An error occurred while updating.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            }else {
-                Toast.makeText(context, "Please ensure all fields are filled out correctly.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "Please ensure all fields are filled out correctly.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-
         }
-
-
     }
-
 
     companion object {
         @JvmStatic

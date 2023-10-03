@@ -3,6 +3,8 @@ package com.example.finalobligatoriskkotlin.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.finalobligatoriskkotlin.repository.PersonRepository
+import com.google.firebase.auth.FirebaseAuth
+import java.sql.RowId
 
 class PersonsViewModel : ViewModel() {
     private val repository = PersonRepository()
@@ -10,27 +12,39 @@ class PersonsViewModel : ViewModel() {
     val errorMessageLiveData: LiveData<String> = repository.errorMessageLiveData
     val updateMessageLiveData: LiveData<String> = repository.updateMessageLiveData
 
-    init{
-        reload()
+    init {
+        val userUID = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUID != null) {
+            repository.getPersonsForUser(userUID)
+        } else {
+            // If no user is logged in, fetch all persons as a fallback
+            repository.getPersons()
+        }
     }
 
     fun reload(){
-        repository.getPersons()
+        val userUID = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUID != null) {
+            repository.getPersonsForUser(userUID)
+        } else {
+            // If no user is logged in, fetch all persons as a fallback
+            repository.getPersons()
+        }
     }
 
     operator fun get(index: Int): Person? {
         return personsLiveData.value?.get(index)
     }
 
-    fun add(person: Person){
-        repository.add(person)
+    fun add(person: Person, userId: String){
+        repository.add(person, userId)
     }
 
-    fun delete(id: Int){
-        repository.delete(id)
+    fun delete(id: Int, userId: String){
+        repository.delete(id, userId)
     }
-    fun update(person: Person){
-        repository.update(person)
+    fun update(person: Person, userId: String){
+        repository.update(person, userId)
     }
     fun sortByName(){
         repository.sortByName()
@@ -48,6 +62,16 @@ class PersonsViewModel : ViewModel() {
         repository.sortByAgeDescending()
     }
 
+    fun sortByBirthday(){
+        repository.sortByBirthday()
+    }
+
+    fun sortByBirthdayDescending(){
+        repository.sortByBirthdayDescending()
+    }
+
+
+
     fun filterByName(name: String){
         repository.filterByName(name)
     }
@@ -55,5 +79,10 @@ class PersonsViewModel : ViewModel() {
     fun getPersonById(id: Int): Person? {
         return personsLiveData.value?.firstOrNull { it.id == id }
     }
+    fun getPersonsForUser(userId: String) {
+        repository.getPersonsForUser(userId)
+    }
+
+
 
 }

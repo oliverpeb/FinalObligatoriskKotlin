@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalobligatoriskkotlin.databinding.FragmentSecondBinding
 import com.example.finalobligatoriskkotlin.models.PersonsViewModel
 import com.example.finalobligatoriskkotlin.models.MyAdapter
+import com.google.firebase.auth.FirebaseAuth
 
 class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
@@ -29,6 +30,10 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userUID = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUID != null) {
+            viewModel.getPersonsForUser(userUID)
+        }
 
         // Set up the layout manager for the RecyclerView
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -59,6 +64,8 @@ class SecondFragment : Fragment() {
                 "Sort by Name Descending" -> viewModel.sortByNameDescending()
                 "Sort by Age" -> viewModel.sortByAge()
                 "Sort by Age Descending" -> viewModel.sortByAgeDescending()
+                "sort by Birthday" -> viewModel.sortByBirthday()
+                "sort by Birthday Descending" -> viewModel.sortByBirthdayDescending()
             }
         }
 
