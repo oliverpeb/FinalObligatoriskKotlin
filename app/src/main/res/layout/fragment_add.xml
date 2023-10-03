@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".AddFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:spacing="10dp">
+
+        <!-- Name input -->
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="text" />
+
+        <!-- Birth Year input -->
+        <EditText
+            android:id="@+id/editTextBirthYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Birth Year"
+            android:inputType="number" />
+
+        <!-- Birth Month input -->
+        <EditText
+            android:id="@+id/editTextBirthMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Birth Month"
+            android:inputType="number" />
+
+        <!-- Birth Day input -->
+        <EditText
+            android:id="@+id/editTextBirthDayOfMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Birth Day"
+            android:inputType="number" />
+
+        <!-- Remarks input -->
+        <EditText
+            android:id="@+id/editTextRemarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Remarks"
+            android:inputType="text" />
+
+        <!-- Picture URL input -->
+        <EditText
+            android:id="@+id/editTextPictureUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Picture Url"
+            android:inputType="textUri" />
+
+        <!-- Save button -->
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+
+    </LinearLayout>
+</ScrollView>

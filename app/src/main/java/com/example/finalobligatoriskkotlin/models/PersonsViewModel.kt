@@ -52,4 +52,8 @@ class PersonsViewModel : ViewModel() {
         repository.filterByName(name)
     }
 
+    fun getPersonById(id: Int): Person? {
+        return personsLiveData.value?.firstOrNull { it.id == id }
+    }
+
 }

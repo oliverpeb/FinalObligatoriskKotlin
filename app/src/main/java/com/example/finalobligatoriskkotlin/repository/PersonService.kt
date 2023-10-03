@@ -8,7 +8,7 @@ interface PersonService {
     @GET("persons")
     fun getAllPersons(): Call<List<Person>>
 
-    @GET("persons/{personId")
+    @GET("persons/{personId}")
     fun getPersonById(@Path("personId") personId: Int): Call<Person>
 
     @POST("persons")

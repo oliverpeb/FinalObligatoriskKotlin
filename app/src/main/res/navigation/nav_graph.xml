@@ -14,23 +14,44 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+
+        <action
+            android:id="@+id/_logout"
+            app:destination="@id/FirstFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.finalobligatoriskkotlin.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
         <action
             android:id="@+id/action_SecondFragment_to_thirdFragment"
             app:destination="@id/thirdFragment" />
+        <action
+            android:id="@+id/action_SecondFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+
+        <action
+            android:id="@+id/action_SecondFragment_to_firstFragment"
+            app:destination="@id/FirstFragment" />
+
+
     </fragment>
+
     <fragment
         android:id="@+id/thirdFragment"
         android:name="com.example.finalobligatoriskkotlin.ThirdFragment"
         android:label="fragment_third"
-        tools:layout="@layout/fragment_third" />
+        tools:layout="@layout/fragment_third">
+        <argument
+            android:name="personId"
+            app:argType="integer"/>
+    </fragment>
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="com.example.finalobligatoriskkotlin.AddFragment"
+        android:label="fragment_add"
+        tools:layout="@layout/fragment_add" />
+
 </navigation>

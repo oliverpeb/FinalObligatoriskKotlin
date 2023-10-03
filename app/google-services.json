@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "91089160133",
+    "project_id": "personlist-b0dc2",
+    "storage_bucket": "personlist-b0dc2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91089160133:android:b397204bf0cf46ac5a6dac",
+        "android_client_info": {
+          "package_name": "com.example.finalobligatoriskkotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeLR5qRGKlCQFOcRODorILIFdV2xSx1lg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

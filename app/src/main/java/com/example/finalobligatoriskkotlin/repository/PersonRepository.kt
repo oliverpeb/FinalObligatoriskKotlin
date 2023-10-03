@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Log
+import java.util.Calendar
 
 
 
@@ -63,6 +64,7 @@ class PersonRepository {
             override fun onFailure(call: Call<Person>, t: Throwable){
                 errorMessageLiveData.postValue(t.message)
                 Log.d("APPLE", t.message!!)
+
             }
         })
 
@@ -74,6 +76,7 @@ class PersonRepository {
                 if(response.isSuccessful){
                     Log.d("APPLE", "Updated: " + response.body())
                     updateMessageLiveData.postValue("Deleted: " + response.body())
+                    getPersons()
                 }else{
                     val message = response.code().toString() + " " + response.message()
                     errorMessageLiveData.postValue(message)
@@ -94,6 +97,7 @@ class PersonRepository {
                 if(response.isSuccessful){
                     Log.d("APPLE", "Updated: " + response.body())
                     updateMessageLiveData.postValue("Updated: " + response.body())
+                    getPersons()
 
                 }else{
                     val message = response.code().toString() + " " + response.message()
@@ -118,11 +122,14 @@ class PersonRepository {
     }
 
     fun sortByAge(){
-        personsLiveData.value = personsLiveData.value?.sortedBy { it.age }
+        personsLiveData.value = personsLiveData.value?.sortedBy { person ->
+            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+            currentYear - person.birthYear
+        }
     }
 
     fun sortByAgeDescending(){
-        personsLiveData.value = personsLiveData.value?.sortedByDescending { it.age }
+        personsLiveData.value = personsLiveData.value?.sortedByDescending { it.calculateAge() }
     }
 
     fun filterByName(name: String){

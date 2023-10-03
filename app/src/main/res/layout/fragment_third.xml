@@ -1,14 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ThirdFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:spacing="10dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Name"/>
+        <!-- Newly Added TextView for Age -->
+        <TextView
+            android:id="@+id/tvPersonAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="Age"/>
+
+        <!-- Newly Added TextView for Birthday -->
+        <TextView
+            android:id="@+id/tvPersonBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="Birthday"/>
+
+        <TextView
+            android:id="@+id/tvPersonBirthYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="Birth Year"/>
+
+        <TextView
+            android:id="@+id/tvPersonBirthMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="Birth Month"/>
+
+        <TextView
+            android:id="@+id/tvPersonBirthDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="Birth Day of Month"/>
+
+        <TextView
+            android:id="@+id/tvPersonRemarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            tools:text="Remarks"/>
+
+        <!-- If you wish to display the image from the URL, you'd use an ImageView. However, you'd need additional libraries like Glide or Picasso to easily load images from URLs. -->
+
+        <ImageView
+            android:id="@+id/ivPersonPicture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            tools:src="@tools:sample/avatars"/>
+
+        <EditText
+            android:id="@+id/editText_Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="text" />
+
+
+        <EditText
+            android:id="@+id/editText_BirthYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Birth Year"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/editText_BirthMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Birth Month"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/editText_BirthDayOfMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Birth Day Of Month"
+            android:inputType="number" />
+
+
+        <EditText
+            android:id="@+id/editText_Remarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Remarks(Optional)"
+            android:inputType="text" />
+
+
+
+
+        <Button
+            android:id="@+id/button_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/button_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update" />
+
+    </LinearLayout>
+</ScrollView>
