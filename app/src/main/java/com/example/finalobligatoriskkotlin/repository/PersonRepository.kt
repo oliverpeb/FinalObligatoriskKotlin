@@ -173,13 +173,31 @@ class PersonRepository {
         personsLiveData.value = personsLiveData.value?.sortedByDescending { it.calculateAge() }
     }
 
-    fun filterByName(name: String){
-        if (name.isBlank()){
-            getPersons()
-        }else{
-            personsLiveData.value = personsLiveData.value?.filter { person -> person.name.contains(name) }
+    fun filterByName(name: String, userId: String) {
+        if (name.isBlank()) {
+            getPersonsForUser(userId)
+        } else {
+            personsLiveData.value = personsLiveData.value?.filter { person ->
+                person.name.contains(name, true)
+            }
         }
     }
+
+
+
+
+    fun filterByAge(minAge: Int, maxAge: Int, userId: String) {
+        personsLiveData.value = personsLiveData.value?.filter { person ->
+            val age = person.calculateAge()
+            age in minAge..maxAge
+        }
+        if (personsLiveData.value?.isEmpty() == true) {
+            getPersonsForUser(userId)
+        }
+    }
+
+
+
 
 
 }

@@ -14,6 +14,8 @@ import com.example.finalobligatoriskkotlin.databinding.FragmentSecondBinding
 import com.example.finalobligatoriskkotlin.models.PersonsViewModel
 import com.example.finalobligatoriskkotlin.models.MyAdapter
 import com.google.firebase.auth.FirebaseAuth
+import android.text.Editable
+import android.text.TextWatcher
 
 class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
@@ -48,15 +50,21 @@ class SecondFragment : Fragment() {
         binding.actionsSpinner.adapter = actionsAdapter
 
         var selectedAction = ""
-        binding.actionsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedAction = parent.getItemAtPosition(position).toString()
-            }
+        binding.actionsSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    selectedAction = parent.getItemAtPosition(position).toString()
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Nothing selected
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // Nothing selected
+                }
             }
-        }
 
         binding.applyActionButton.setOnClickListener {
             when (selectedAction) {
@@ -74,16 +82,76 @@ class SecondFragment : Fragment() {
             val adapter = MyAdapter(persons) { position ->
                 val selectedPerson = viewModel.personsLiveData.value?.get(position)
                 if (selectedPerson != null) {
-                    val action = SecondFragmentDirections.actionSecondFragmentToThirdFragment(selectedPerson.id)
+                    val action =
+                        SecondFragmentDirections.actionSecondFragmentToThirdFragment(selectedPerson.id)
                     findNavController().navigate(action)
                 }
             }
             binding.recyclerView.adapter = adapter
         }
 
-        binding.buttonAdd.setOnClickListener{
+        binding.buttonAdd.setOnClickListener {
             val action = SecondFragmentDirections.actionSecondFragmentToAddFragment()
             findNavController().navigate(action)
+        }
+
+        binding.clearFiltersButton.setOnClickListener {
+            binding.filterNameEditText.text.clear()
+            binding.filterMinAgeEditText.text.clear()
+            binding.filterMaxAgeEditText.text.clear()
+            viewModel.reload() // Reload original list or any other logic you have for resetting
+        }
+
+        // TextWatcher for name filter
+        binding.filterNameEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val nameFilter = s.toString()
+                viewModel.filterByName(nameFilter)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // TextWatcher for Min Age filter
+        binding.filterMinAgeEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                applyAgeFilter()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // TextWatcher for Max Age filter
+        binding.filterMaxAgeEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                applyAgeFilter()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+    }
+
+    private fun applyAgeFilter() {
+        val minAgeStr = binding.filterMinAgeEditText.text.toString()
+        val maxAgeStr = binding.filterMaxAgeEditText.text.toString()
+
+        if (minAgeStr.isNotBlank() && maxAgeStr.isNotBlank()) {
+            try {
+                val minAgeInt = minAgeStr.toInt()
+                val maxAgeInt = maxAgeStr.toInt()
+                viewModel.filterByAge(minAgeInt, maxAgeInt)
+            } catch (e: NumberFormatException) {
+                // Handle the case where the input is not a valid integer, maybe show a message
+            }
+        } else {
+            viewModel.reload() // Refetch the original list or reset the filter when any input is blank
         }
     }
 

@@ -16,6 +16,8 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.finalobligatoriskkotlin.databinding.FragmentThirdBinding
 import com.google.firebase.auth.FirebaseAuth
+import android.app.AlertDialog
+import android.content.DialogInterface
 
 class ThirdFragment : Fragment() {
 
@@ -66,23 +68,38 @@ class ThirdFragment : Fragment() {
         birthDayTextView.text = "Birth Day Of Month: ${selectedPerson?.birthDayOfMonth}"
         remarksTextView.text = "Remarks: ${selectedPerson?.remarks}"
         ageTextView.text = "Age: ${selectedPerson?.age}"
-        birthdayTextView.text = "Birthday: ${selectedPerson?.birthDayOfMonth}/${selectedPerson?.birthMonth}/${selectedPerson?.birthYear}"
+        birthdayTextView.text =
+            "Birthday: ${selectedPerson?.birthDayOfMonth}/${selectedPerson?.birthMonth}/${selectedPerson?.birthYear}"
 
         binding.buttonDelete.setOnClickListener {
             selectedPerson?.let {
-                Log.d("Pear", "Delete button clicked")
                 val userUID = FirebaseAuth.getInstance().currentUser?.uid
                 if (userUID != null) {
-                    viewModel.delete(it.id, userUID)
-                    Log.d("Pear", "Person deleted with ID: ${it.id}")
-                    viewModel.getPersonsForUser(userUID)
-                    findNavController().popBackStack()
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setMessage("Are you sure you want to delete this person?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes") { dialog, id ->
+                            viewModel.delete(it.id, userUID)
+                            Log.d("Pear", "Person deleted with ID: ${it.id}")
+                            Toast.makeText(
+                                context,
+                                "${selectedPerson?.name} has been deleted successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            viewModel.getPersonsForUser(userUID)
+                            findNavController().popBackStack()
+                        }
+                        .setNegativeButton("No") { dialog, id ->
+                            dialog.cancel()
+                        }
+                    val alert = builder.create()
+                    alert.show()
                 } else {
-                    // Handle the case when there's no logged-in user (Optional)
                     Toast.makeText(context, "User not logged in.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
 
         binding.buttonUpdate.setOnClickListener {
             val name = binding.editTextName.text.toString()
@@ -104,9 +121,25 @@ class ThirdFragment : Fragment() {
                 )
 
                 if (updatedPerson != null) {
-                    viewModel.update(updatedPerson, userUID)
-                    viewModel.getPersonsForUser(userUID)
-                    findNavController().popBackStack()
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setMessage("Are you sure you want to update this person?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes") { dialog, id ->
+                            viewModel.update(updatedPerson, userUID)
+                            viewModel.getPersonsForUser(userUID)
+                            Log.d("Pear", "Person updated with ID: ${it.id}")
+                            Toast.makeText(
+                                context,
+                                "${selectedPerson?.name} has been updated successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            findNavController().popBackStack()
+                        }
+                        .setNegativeButton("No") { dialog, id ->
+                            dialog.cancel()
+                        }
+                    val alert = builder.create()
+                    alert.show()
                 } else {
                     Toast.makeText(
                         context,
@@ -123,6 +156,7 @@ class ThirdFragment : Fragment() {
             }
         }
     }
+
 
     companion object {
         @JvmStatic

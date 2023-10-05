@@ -1,13 +1,12 @@
 package com.example.finalobligatoriskkotlin
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import androidx.navigation.fragment.findNavController
 import com.example.finalobligatoriskkotlin.databinding.ActivityMainBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
@@ -34,11 +33,21 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setTitle("Person List")
+        supportActionBar?.title = "Person List"
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        // Handle the back button and title manually
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.FirstFragment) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(false) // Hide back button on start fragment
+            } else {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)  // Show back button on other fragments
+            }
+            supportActionBar?.title = "Person List" // Set title
+        }
+
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -51,15 +60,18 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_logout -> {
                 auth.signOut() // Sign out the user
                 Toast.makeText(this, "You have successfully logged out", Toast.LENGTH_SHORT).show()
-                // You can add additional logic here, such as navigating to the login screen
+                // Navigate back to FirstFragment after logging out
                 val navController = findNavController(R.id.nav_host_fragment_content_main)
                 navController.popBackStack(R.id.FirstFragment, false)
+                return true
+            }
+            android.R.id.home -> {
+                findNavController(R.id.nav_host_fragment_content_main).navigateUp()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -68,7 +80,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

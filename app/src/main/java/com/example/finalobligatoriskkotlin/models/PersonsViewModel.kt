@@ -71,10 +71,25 @@ class PersonsViewModel : ViewModel() {
     }
 
 
-
-    fun filterByName(name: String){
-        repository.filterByName(name)
+    fun filterByAge(minAge: Int, maxAge: Int) {
+        val userUID = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUID != null) {
+            repository.filterByAge(minAge, maxAge, userUID)
+        }
     }
+
+
+
+
+
+
+    fun filterByName(name: String) {
+        val userUID = FirebaseAuth.getInstance().currentUser!!.uid // As we know the user is logged in
+        repository.filterByName(name, userUID)
+    }
+
+
+
 
     fun getPersonById(id: Int): Person? {
         return personsLiveData.value?.firstOrNull { it.id == id }

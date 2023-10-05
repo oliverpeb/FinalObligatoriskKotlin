@@ -71,6 +71,13 @@
             android:layout_gravity="center"
             tools:src="@tools:sample/avatars"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Input new values here to update your friend's information:"
+            android:paddingBottom="8dp"
+            android:textStyle="bold"/>
+
         <EditText
             android:id="@+id/editText_Name"
             android:layout_width="match_parent"
@@ -115,7 +122,8 @@
             android:id="@+id/button_delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delete" />
+            android:text="Delete"
+            android:backgroundTint="@color/red"/>
 
         <Button
             android:id="@+id/button_update"
