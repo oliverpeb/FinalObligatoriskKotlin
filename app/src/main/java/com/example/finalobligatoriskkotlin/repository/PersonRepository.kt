@@ -177,27 +177,23 @@ class PersonRepository {
         if (name.isBlank()) {
             getPersonsForUser(userId)
         } else {
-            personsLiveData.value = personsLiveData.value?.filter { person ->
+            val filteredList = personsLiveData.value?.filter { person ->
                 person.name.contains(name, true)
             }
+            personsLiveData.value = if (filteredList.isNullOrEmpty()) emptyList() else filteredList
         }
     }
-
 
 
 
     fun filterByAge(minAge: Int, maxAge: Int, userId: String) {
-        personsLiveData.value = personsLiveData.value?.filter { person ->
+        val filteredList = personsLiveData.value?.filter { person ->
             val age = person.calculateAge()
             age in minAge..maxAge
         }
-        if (personsLiveData.value?.isEmpty() == true) {
-            getPersonsForUser(userId)
-        }
+
+        // If the filtered list is empty or null, we set the value to an empty list
+        personsLiveData.postValue(if (filteredList.isNullOrEmpty()) emptyList() else filteredList)
     }
-
-
-
-
 
 }

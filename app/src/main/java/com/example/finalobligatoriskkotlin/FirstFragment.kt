@@ -37,6 +37,11 @@ class FirstFragment : Fragment() {
             val email = binding.usernameEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
 
+            if(email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(context, "Both email and password fields must be filled!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
@@ -49,6 +54,11 @@ class FirstFragment : Fragment() {
         binding.registerButton.setOnClickListener {
             val email = binding.usernameEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
+
+            if(email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(context, "Both email and password cannot be empty!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {

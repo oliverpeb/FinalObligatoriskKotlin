@@ -78,11 +78,6 @@ class PersonsViewModel : ViewModel() {
         }
     }
 
-
-
-
-
-
     fun filterByName(name: String) {
         val userUID = FirebaseAuth.getInstance().currentUser!!.uid // As we know the user is logged in
         repository.filterByName(name, userUID)

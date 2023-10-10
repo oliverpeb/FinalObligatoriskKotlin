@@ -16,11 +16,18 @@ import com.example.finalobligatoriskkotlin.models.MyAdapter
 import com.google.firebase.auth.FirebaseAuth
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.os.Handler
+import android.os.Looper
+
 
 class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PersonsViewModel by activityViewModels()
+
+    private val ageFilterHandler = Handler(Looper.getMainLooper())
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +41,10 @@ class SecondFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val userUID = FirebaseAuth.getInstance().currentUser?.uid
         if (userUID != null) {
+            Log.d("SecondFragment", "User UID: $userUID")
             viewModel.getPersonsForUser(userUID)
+        }else {
+            Log.d("SecondFragment", "User UID is null")
         }
 
         // Set up the layout manager for the RecyclerView
@@ -108,6 +118,7 @@ class SecondFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val nameFilter = s.toString()
+                Log.d("SecondFragment", "Name filter applied with value: $nameFilter")
                 viewModel.filterByName(nameFilter)
             }
 
@@ -139,21 +150,26 @@ class SecondFragment : Fragment() {
     }
 
     private fun applyAgeFilter() {
-        val minAgeStr = binding.filterMinAgeEditText.text.toString()
-        val maxAgeStr = binding.filterMaxAgeEditText.text.toString()
+        ageFilterHandler.removeCallbacksAndMessages(null) // remove any pending callbacks
 
-        if (minAgeStr.isNotBlank() && maxAgeStr.isNotBlank()) {
-            try {
-                val minAgeInt = minAgeStr.toInt()
-                val maxAgeInt = maxAgeStr.toInt()
-                viewModel.filterByAge(minAgeInt, maxAgeInt)
-            } catch (e: NumberFormatException) {
-                // Handle the case where the input is not a valid integer, maybe show a message
+        ageFilterHandler.postDelayed({
+            val minAgeStr = binding.filterMinAgeEditText.text.toString()
+            val maxAgeStr = binding.filterMaxAgeEditText.text.toString()
+
+            if (minAgeStr.isNotBlank() && maxAgeStr.isNotBlank()) {
+                try {
+                    val minAgeInt = minAgeStr.toInt()
+                    val maxAgeInt = maxAgeStr.toInt()
+                    viewModel.filterByAge(minAgeInt, maxAgeInt)
+                } catch (e: NumberFormatException) {
+                    // Handle the case where the input is not a valid integer, maybe show a message
+                }
+            } else {
+                viewModel.reload() // Refetch the original list or reset the filter when any input is blank
             }
-        } else {
-            viewModel.reload() // Refetch the original list or reset the filter when any input is blank
-        }
+        }, 500) // wait for 500 milliseconds (0.5 seconds) before applying the filter
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
