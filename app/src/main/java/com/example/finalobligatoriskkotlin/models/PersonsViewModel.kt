@@ -84,8 +84,6 @@ class PersonsViewModel : ViewModel() {
     }
 
 
-
-
     fun getPersonById(id: Int): Person? {
         return personsLiveData.value?.firstOrNull { it.id == id }
     }

@@ -109,7 +109,7 @@ class SecondFragment : Fragment() {
             binding.filterNameEditText.text.clear()
             binding.filterMinAgeEditText.text.clear()
             binding.filterMaxAgeEditText.text.clear()
-            viewModel.reload() // Reload original list or any other logic you have for resetting
+            viewModel.reload() // Reload original list
         }
 
         // TextWatcher for name filter
